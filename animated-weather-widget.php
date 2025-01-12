@@ -52,7 +52,7 @@ class Animated_Weather_Wdiget extends WP_Widget {
 
     // Widget Frontend Display
     public function widget($args, $instance) {
-        echo esc_attr($args['before_widget']);
+        echo $args['before_widget'];
         
         $api_key = get_option('weather_plugin_api_key');
         $location = !empty($instance['location']) ? $instance['location'] : get_option('weather_plugin_default_location', 'London,UK');
@@ -71,7 +71,7 @@ class Animated_Weather_Wdiget extends WP_Widget {
         
         if (is_wp_error($weather_data)) {
             echo $weather_data->get_error_message();
-            echo esc_attr($args['after_widget']);
+            echo $args['after_widget'];
             return;
         }
 
@@ -79,9 +79,9 @@ class Animated_Weather_Wdiget extends WP_Widget {
         <div class="weather-widget">
             <div class="weather-location">
                 <i class="fas fa-map-marker-alt"></i>
-                <?php echo esc_html($weather_data['name']); ?>
+                <?php echo $weather_data['name']; ?>
                 <?php if(!empty($weather_data['sys']['country'])): ?>
-                    , <?php echo esc_html($weather_data['sys']['country']); ?>
+                    , <?php echo $weather_data['sys']['country']; ?>
                 <?php endif; ?>
                 
                 <div class="weather-note">
@@ -90,7 +90,7 @@ class Animated_Weather_Wdiget extends WP_Widget {
                     $timezone = $weather_data['timezone']; 
                     $timestamp = time() + $timezone; 
                     $localTime = gmdate('g:i a', $timestamp); 
-                    echo esc_html($localTime); 
+                    echo $localTime; 
                     ?>
                     </sup>
                 </div>
@@ -114,7 +114,7 @@ class Animated_Weather_Wdiget extends WP_Widget {
                 <?php if($show_description): ?>
                     <div class="weather-item">
                         <i class="fas fa-umbrella"></i>
-                        <?php echo esc_html(ucfirst($weather_data['weather'][0]['description'])); ?>
+                        <?php echo (ucfirst($weather_data['weather'][0]['description'])); ?>
                     </div>
                 <?php endif; ?>
 
@@ -147,7 +147,7 @@ class Animated_Weather_Wdiget extends WP_Widget {
         </div>
         <?php
         
-        echo  esc_attr($args['after_widget']);
+        echo  $args['after_widget'];
     }
 
     // Widget Backend Form
@@ -338,7 +338,7 @@ $weather_shortcode_docs = '<hr style="margin: 30px 0;">
 do_shortcode([weather location="London,UK" temp_unit="C"])</pre>';
 
 
-echo esc_html($weather_shortcode_docs);
+echo $weather_shortcode_docs;
 }
 
 // Admin Settings Page
