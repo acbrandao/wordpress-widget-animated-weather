@@ -30,8 +30,8 @@ class Animated_Weather_Wdiget extends WP_Widget {
     }
 
     public function load_fontawesome() {
-      #  wp_enqueue_style('fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
-      wp_enqueue_style('fontawesome', plugins_url('/assets/css/all.min.css', __FILE__));
+        wp_enqueue_style('fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+     // wp_enqueue_style('fontawesome', plugins_url('/assets/css/all.min.css', __FILE__));
     
     }
 
