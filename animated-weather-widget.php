@@ -480,7 +480,7 @@ function weather_plugin_styles() {
     }
 
     .weather-icon {
-        margin-bottom: -10px;
+        margin-bottom: -5px;
     }
 
     .weather-icon img {
@@ -495,7 +495,7 @@ function weather_plugin_styles() {
     }
 
     .temp-primary {
-        font-size: 3.2em;
+        font-size: 3.0em;
         font-weight: bold;
         line-height: 0;
     }
