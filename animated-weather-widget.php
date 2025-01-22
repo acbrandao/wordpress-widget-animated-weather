@@ -351,14 +351,12 @@ function aniweather_plugin_settings_page() {
     
     if (isset($_POST['aniweather_plugin_api_key'])) {
 
-
         $receivedNonce = $_POST['nonce'];
         $storedNonce = $_SESSION['nonce'];
       
         if (hash_equals($receivedNonce, $storedNonce)) {
          
-        // Regenerate nonce for the next request
-        $_SESSION['nonce'] = bin2hex(random_bytes(32)); 
+      
     
        // Process the request 
         update_option('aniweather_plugin_api_key', sanitize_text_field($_POST['aniweather_plugin_api_key']));
@@ -371,10 +369,13 @@ function aniweather_plugin_settings_page() {
         update_option('aniweather_plugin_gradient_end', sanitize_hex_color(wp_unslash($_POST['aniweather_plugin_gradient_end'])));
         
         echo ('<div class="updated"><p>Settings saved!</p></div>');
+
+          // Regenerate nonce for the next request
+          $_SESSION['nonce'] = bin2hex(random_bytes(32)); 
           
         } else {
             http_response_code(403); 
-            echo "Unauthorized access. recv:". $receivedNonce."  stored:".$storedNonce ;
+            echo "Unauthorized access.\n nonce:". $receivedNonce."\n stashed:".$storedNonce."\n API:".$_POST['aniweather_plugin_api_key'] ;
             }
     
 
