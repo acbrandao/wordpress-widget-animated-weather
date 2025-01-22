@@ -374,7 +374,7 @@ function aniweather_plugin_settings_page() {
           
         } else {
             http_response_code(403); 
-            echo "Unauthorized access.";
+            echo "Unauthorized access. recv:". $receivedNonce."  stored:".$storedNonce ;
             }
     
 
