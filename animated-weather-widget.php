@@ -15,10 +15,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-//NONCE setup
-// Generate and store a unique nonce
-if (!isset($_SESSION['nonce'])) {
+
+// Generate and store a unique nonce if empty
+if (empty($_SESSION['nonce'])) {
     $_SESSION['nonce'] = bin2hex(random_bytes(32)); 
+    echo "Empty nonce<bR>.\n generating nonce:". $_SESSION['nonce'] ;
+         
   }
   
 // Widget Class
