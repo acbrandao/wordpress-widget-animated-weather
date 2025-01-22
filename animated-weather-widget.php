@@ -3,7 +3,7 @@
 Plugin Name: Animated Weather Widget
 Description: A simple animated  weather plugin using OpenWeatherMap API (requires API key) and meteocons with shortcode [weather] and settings        
 Version: 1.2
-Author: Antonio Brandao (abrandao@abrandao.com)
+Author: Tony Brandao (abrandao@abrandao.com) wp: abrandaocom
 Author URI: http://www.abrandao.com
 Plugin URI: https://www.abrandao.com/2025/01/wordpress-animated-weather-widget/
 License:     GPL2
@@ -15,12 +15,18 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+//NONCE setup
+// Generate and store a unique nonce
+if (!isset($_SESSION['nonce'])) {
+    $_SESSION['nonce'] = bin2hex(random_bytes(32)); 
+  }
+  
 // Widget Class
-class Animated_Weather_Wdiget extends WP_Widget {
+class Animated_aniweather_Wdiget extends WP_Widget {
     
     public function __construct() {
         parent::__construct(
-            'animated_weather_widget',
+            'animated_aniweather_widget',
             'Animated Weather Widget',
             array('description' => 'Displays weather widget using OpenWeatherMap API with customizable display options')
         );
@@ -30,8 +36,8 @@ class Animated_Weather_Wdiget extends WP_Widget {
     }
 
     public function load_fontawesome() {
-        wp_enqueue_style('fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
-     // wp_enqueue_style('fontawesome', plugins_url('/assets/css/all.min.css', __FILE__));
+        wp_enqueue_style('fontawesome', plugins_url('assets/css/all.min.css', __FILE__));
+        // wp_enqueue_style('fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
     
     }
 
@@ -39,8 +45,8 @@ class Animated_Weather_Wdiget extends WP_Widget {
         wp_enqueue_style('weather-plugin-style', plugins_url('weather-plugin.css', __FILE__));
         
         // Get gradient colors from settings
-        $gradient_start = get_option('weather_plugin_gradient_start', '#8db3c5');
-        $gradient_end = get_option('weather_plugin_gradient_end', '#0090D2');
+        $gradient_start = get_option('aniweather_plugin_gradient_start', '#8db3c5');
+        $gradient_end = get_option('aniweather_plugin_gradient_end', '#0090D2');
         
         $custom_css = "
             .weather-widget {
@@ -52,26 +58,26 @@ class Animated_Weather_Wdiget extends WP_Widget {
 
     // Widget Frontend Display
     public function widget($args, $instance) {
-        echo $args['before_widget'];
+    
         
-        $api_key = get_option('weather_plugin_api_key');
-        $location = !empty($instance['location']) ? $instance['location'] : get_option('weather_plugin_default_location', 'London,UK');
-        $temp_unit = !empty($instance['temp_unit']) ? $instance['temp_unit'] : get_option('weather_plugin_temp_unit', 'F');
-        $show_high_low = isset($instance['show_high_low']) ? $instance['show_high_low'] : get_option('weather_plugin_show_high_low', true);
-        $show_wind = isset($instance['show_wind']) ? $instance['show_wind'] : get_option('weather_plugin_show_wind', true);
-        $show_description = isset($instance['show_description']) ? $instance['show_description'] : get_option('weather_plugin_show_description', true);
+        $api_key = get_option('aniweather_plugin_api_key');
+        $location = !empty($instance['location']) ? $instance['location'] : get_option('aniweather_plugin_default_location', 'London,UK');
+        $temp_unit = !empty($instance['temp_unit']) ? $instance['temp_unit'] : get_option('aniweather_plugin_temp_unit', 'F');
+        $show_high_low = isset($instance['show_high_low']) ? $instance['show_high_low'] : get_option('aniweather_plugin_show_high_low', true);
+        $show_wind = isset($instance['show_wind']) ? $instance['show_wind'] : get_option('aniweather_plugin_show_wind', true);
+        $show_description = isset($instance['show_description']) ? $instance['show_description'] : get_option('aniweather_plugin_show_description', true);
         
         if (empty($api_key)) {
-            echo 'Please configure OpenWeatherMap API key in settings.';
-            echo esc_attr($args['after_widget']);
+            echo esc_html('Please configure OpenWeatherMap API key in settings.');
+            echo ($args['after_widget']);  //do not escape
             return;
         }
 
-        $weather_data = $this->get_weather_data($api_key, $location);
+        $aniweather_data = $this->get_aniweather_data($api_key, $location);
         
-        if (is_wp_error($weather_data)) {
-            echo $weather_data->get_error_message();
-            echo $args['after_widget'];
+        if (is_wp_error($aniweather_data)) {
+            echo esc_html($aniweather_data->get_error_message() );
+            echo ($args['after_widget']);  //do not escape
             return;
         }
 
@@ -79,18 +85,18 @@ class Animated_Weather_Wdiget extends WP_Widget {
         <div class="weather-widget">
             <div class="weather-location">
                 <i class="fas fa-map-marker-alt"></i>
-                <?php echo $weather_data['name']; ?>
-                <?php if(!empty($weather_data['sys']['country'])): ?>
-                    , <?php echo $weather_data['sys']['country']; ?>
+                <?php echo  esc_html($aniweather_data['name']); ?>
+                <?php if(!empty($aniweather_data['sys']['country'])): ?>
+                    , <?php echo  esc_html($aniweather_data['sys']['country']); ?>
                 <?php endif; ?>
                 
                 <div class="weather-note">
                     <sup>
                     <?php 
-                    $timezone = $weather_data['timezone']; 
+                    $timezone = $aniweather_data['timezone']; 
                     $timestamp = time() + $timezone; 
                     $localTime = gmdate('g:i a', $timestamp); 
-                    echo $localTime; 
+                    echo  esc_html($localTime); 
                     ?>
                     </sup>
                 </div>
@@ -98,14 +104,14 @@ class Animated_Weather_Wdiget extends WP_Widget {
            
             <div class="weather-main">
                 <div class="weather-icon">
-                    <?php echo $this->get_weather_icon($weather_data['weather'][0]['icon']); ?>
+                    <?php echo  esc_html($this->get_aniweather_icon($aniweather_data['weather'][0]['icon']) ); ?>
                    
                 </div>
                 <div class="weather-temp">
                     <?php if($temp_unit == 'F'): ?>
-                        <span class="temp-primary"><?php echo round($weather_data['main']['temp'] * 9/5 + 32); ?>°F</span>
+                        <span class="temp-primary"><?php echo  esc_html(round($aniweather_data['main']['temp'] * 9/5 + 32) ); ?>°F</span>
                     <?php else: ?>
-                        <span class="temp-primary"><?php echo round($weather_data['main']['temp']); ?>°C</span>
+                        <span class="temp-primary"><?php echo  esc_html(round($aniweather_data['main']['temp'])); ?>°C</span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -114,7 +120,7 @@ class Animated_Weather_Wdiget extends WP_Widget {
                 <?php if($show_description): ?>
                     <div class="weather-item">
                         <i class="fas fa-umbrella"></i>
-                        <?php echo (ucfirst($weather_data['weather'][0]['description'])); ?>
+                        <?php echo  esc_html((ucfirst($aniweather_data['weather'][0]['description']))); ?>
                     </div>
                 <?php endif; ?>
 
@@ -122,17 +128,17 @@ class Animated_Weather_Wdiget extends WP_Widget {
                     <div class="weather-item">
                         <i class="fas fa-temperature-high"></i>
                         High: <?php 
-                        echo $temp_unit == 'F'
-                            ? round($weather_data['main']['temp_max'] * 9/5 + 32) . '°F'
-                            : round($weather_data['main']['temp_max']) . '°C';
+                        echo  esc_html($temp_unit) == 'F'
+                            ? round($aniweather_data['main']['temp_max'] * 9/5 + 32) . '°F'
+                            : round($aniweather_data['main']['temp_max']) . '°C';
                         ?>
                     </div>
                     <div class="weather-item">
                         <i class="fas fa-temperature-low"></i>
                         Low: <?php 
-                        echo $temp_unit == 'F'
-                            ? round($weather_data['main']['temp_min'] * 9/5 + 32) . '°F'
-                            : round($weather_data['main']['temp_min']) . '°C';
+                        echo  esc_html($temp_unit) == 'F'
+                            ? round($aniweather_data['main']['temp_min'] * 9/5 + 32) . '°F'
+                            : round($aniweather_data['main']['temp_min']) . '°C';
                         ?>
                     </div>
                 <?php endif; ?>
@@ -140,14 +146,14 @@ class Animated_Weather_Wdiget extends WP_Widget {
                 <?php if($show_wind): ?>
                     <div class="weather-item">
                         <i class="fas fa-wind"></i>
-                        Wind: <?php echo round($weather_data['wind']['speed'] * 2.237); ?> mph
+                        Wind: <?php echo  esc_html(round($aniweather_data['wind']['speed'] * 2.237)); ?> mph
                     </div>
                 <?php endif; ?>
             </div>
         </div>
         <?php
         
-        echo  $args['after_widget'];
+        echo ($args['after_widget']);  //do not escape
     }
 
     // Widget Backend Form
@@ -159,37 +165,37 @@ class Animated_Weather_Wdiget extends WP_Widget {
         $show_description = isset($instance['show_description']) ? $instance['show_description'] : true;
         ?>
         <p>
-            <label for="<?php echo $this->get_field_id('location'); ?>">Location:</label>
-            <input class="widefat" id="<?php echo $this->get_field_id('location'); ?>" 
-                   name="<?php echo $this->get_field_name('location'); ?>" type="text" 
+            <label for="<?php echo  esc_attr($this->get_field_id('location')); ?>">Location:</label>
+            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('location')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('location')); ?>" type="text" 
                    value="<?php echo esc_attr($location); ?>" 
                    placeholder="City name,Country code (e.g., London,UK)">
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id('temp_unit'); ?>">Temperature Unit:</label>
-            <select class="widefat" id="<?php echo $this->get_field_id('temp_unit'); ?>" 
-                    name="<?php echo $this->get_field_name('temp_unit'); ?>">
+            <label for="<?php echo esc_attr($this->get_field_id('temp_unit')); ?>">Temperature Unit:</label>
+            <select class="widefat" id="<?php echo esc_attr($this->get_field_id('temp_unit')); ?>" 
+                    name="<?php echo esc_attr($this->get_field_name('temp_unit')); ?>">
                 <option value="F" <?php selected($temp_unit, 'F'); ?>>Fahrenheit</option>
                 <option value="C" <?php selected($temp_unit, 'C'); ?>>Celsius</option>
             </select>
         </p>
         <p>
-            <input type="checkbox" id="<?php echo $this->get_field_id('show_high_low'); ?>" 
-                   name="<?php echo $this->get_field_name('show_high_low'); ?>" 
+            <input type="checkbox" id="<?php echo esc_attr($this->get_field_id('show_high_low')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('show_high_low')); ?>" 
                    <?php checked($show_high_low); ?>>
-            <label for="<?php echo $this->get_field_id('show_high_low'); ?>">Show High/Low Temperatures</label>
+            <label for="<?php echo esc_attr($this->get_field_id('show_high_low')); ?>">Show High/Low Temperatures</label>
         </p>
         <p>
-            <input type="checkbox" id="<?php echo $this->get_field_id('show_wind'); ?>" 
-                   name="<?php echo $this->get_field_name('show_wind'); ?>" 
+            <input type="checkbox" id="<?php echo esc_attr($this->get_field_id('show_wind')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('show_wind')); ?>" 
                    <?php checked($show_wind); ?>>
-            <label for="<?php echo $this->get_field_id('show_wind'); ?>">Show Wind Speed</label>
+            <label for="<?php echo esc_attr($this->get_field_id('show_wind')); ?>">Show Wind Speed</label>
         </p>
         <p>
-            <input type="checkbox" id="<?php echo $this->get_field_id('show_description'); ?>" 
-                   name="<?php echo $this->get_field_name('show_description'); ?>" 
+            <input type="checkbox" id="<?php echo esc_attr($this->get_field_id('show_description')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('show_description')); ?>" 
                    <?php checked($show_description); ?>>
-            <label for="<?php echo $this->get_field_id('show_description'); ?>">Show Weather Description</label>
+            <label for="<?php echo esc_attr($this->get_field_id('show_description'); ?>">Show Weather Description</label>
         </p>
         <?php
     }
@@ -205,7 +211,7 @@ class Animated_Weather_Wdiget extends WP_Widget {
         return $instance;
     }
 
-    private function get_weather_data($api_key, $location) {
+    private function get_aniweather_data($api_key, $location) {
         $url = add_query_arg(
             array(
                 'q' => urlencode($location),
@@ -218,22 +224,20 @@ class Animated_Weather_Wdiget extends WP_Widget {
         $response = wp_remote_get($url);
 
         if (is_wp_error($response)) {
-            return new WP_Error('weather_api_error', 'Failed to fetch weather data');
+            return new WP_Error('aniweather_api_error', 'Failed to fetch weather data');
         }
 
         $body = wp_remote_retrieve_body($response);
         $data = json_decode($body, true);
 
         if (empty($data) || isset($data['cod']) && $data['cod'] !== 200) {
-            return new WP_Error('weather_api_error', 'Invalid response from weather API');
+            return new WP_Error('aniweather_api_error', 'Invalid response from weather API');
         }
 
         return $data;
     }
 
-    private function get_weather_icon($icon_code) {
-        // Using OpenWeatherMap icon codes directly
-        // return "<img src='https://openweathermap.org/img/wn/{@2x.png' alt='Weather Icon'>";
+    private function get_aniweather_icon($icon_code) {
 
         $url_file_path=plugins_url('assets/icons/openweathermap', __FILE__);
         $icon_filename=$url_file_path."/".$icon_code.".svg";
@@ -244,23 +248,23 @@ class Animated_Weather_Wdiget extends WP_Widget {
 }
 
 // Register widget
-function register_weather_widget() {
-    register_widget('Animated_Weather_Wdiget');
+function enroll_aniweather_widget() {
+    register_widget('Animated_aniweather_Wdiget');
 }
-add_action('widgets_init', 'register_weather_widget');
+add_action('widgets_init', 'enroll_aniweather_widget');
 
 
 // Add this code after the widget registration and before the admin menu functions
 
 // Register Shortcode
-function weather_widget_shortcode($atts) {
+function aniweather_widget_shortcode($atts) {
     // Parse shortcode attributes
     $atts = shortcode_atts(array(
-        'location' => get_option('weather_plugin_default_location', 'London,UK'),
-        'temp_unit' => get_option('weather_plugin_temp_unit', 'F'),
-        'show_high_low' => get_option('weather_plugin_show_high_low', true),
-        'show_wind' => get_option('weather_plugin_show_wind', true),
-        'show_description' => get_option('weather_plugin_show_description', true)
+        'location' => get_option('aniweather_plugin_default_location', 'London,UK'),
+        'temp_unit' => get_option('aniweather_plugin_temp_unit', 'F'),
+        'show_high_low' => get_option('aniweather_plugin_show_high_low', true),
+        'show_wind' => get_option('aniweather_plugin_show_wind', true),
+        'show_description' => get_option('aniweather_plugin_show_description', true)
     ), $atts, 'weather');
 
     // Convert string boolean values to actual booleans
@@ -272,7 +276,7 @@ function weather_widget_shortcode($atts) {
     ob_start();
 
     // Create instance of widget
-    $widget = new Animated_Weather_Wdiget();
+    $widget = new Animated_aniweather_Wdiget();
     
     // Call widget() method with proper arguments
     $widget->widget(
@@ -288,24 +292,24 @@ function weather_widget_shortcode($atts) {
     // Return the buffered content
     return ob_get_clean();
 }
-add_shortcode('weather', 'weather_widget_shortcode');
+add_shortcode('weather', 'aniweather_widget_shortcode');
 
 
 // Add Admin Menu
-function weather_plugin_admin_menu() {
+function aniweather_plugin_admin_menu() {
     add_options_page(
         'Weather Widget Settings',
         'Weather Widget',
         'manage_options',
         'weather-plugin-settings',
-        'weather_plugin_settings_page'
+        'aniweather_plugin_settings_page'
     );
 }
-add_action('admin_menu', 'weather_plugin_admin_menu');
+add_action('admin_menu', 'aniweather_plugin_admin_menu');
 
 // WEather Shortcode documentation / help
-function add_weather_shortcode_docs() {
-$weather_shortcode_docs = '<hr style="margin: 30px 0;">
+function generate_aniweather_shortcode_docs() {
+$aniweather_shortcode_docs = '<hr style="margin: 30px 0;">
 <h2>Shortcode Usage</h2>
 <p>You can display the weather widget anywhere in your content using the <code>[weather]</code> shortcode.</p>
 
@@ -338,49 +342,66 @@ $weather_shortcode_docs = '<hr style="margin: 30px 0;">
 do_shortcode([weather location="London,UK" temp_unit="C"])</pre>';
 
 
-echo $weather_shortcode_docs;
+echo $aniweather_shortcode_docs;  //Do not escape , all hardcoded html
 }
 
 // Admin Settings Page
-function weather_plugin_settings_page() {
+function aniweather_plugin_settings_page() {
    
     
-    if (isset($_POST['weather_plugin_api_key'])) {
-        update_option('weather_plugin_api_key', sanitize_text_field($_POST['weather_plugin_api_key']));
-        update_option('weather_plugin_default_location', sanitize_text_field($_POST['weather_plugin_default_location']));
-        update_option('weather_plugin_temp_unit', sanitize_text_field($_POST['weather_plugin_temp_unit']));
-        update_option('weather_plugin_show_high_low', isset($_POST['weather_plugin_show_high_low']));
-        update_option('weather_plugin_show_wind', isset($_POST['weather_plugin_show_wind']));
-        update_option('weather_plugin_show_description', isset($_POST['weather_plugin_show_description']));
-        update_option('weather_plugin_gradient_start', sanitize_hex_color(wp_unslash($_POST['weather_plugin_gradient_start'])));
-        update_option('weather_plugin_gradient_end', sanitize_hex_color(wp_unslash($_POST['weather_plugin_gradient_end'])));
+    if (isset($_POST['aniweather_plugin_api_key'])) {
+
+
+        $receivedNonce = $_POST['nonce'];
+        $storedNonce = $_SESSION['nonce'];
+      
+        if (hash_equals($receivedNonce, $storedNonce)) {
+         
+        // Regenerate nonce for the next request
+        $_SESSION['nonce'] = bin2hex(random_bytes(32)); 
+    
+       // Process the request 
+        update_option('aniweather_plugin_api_key', sanitize_text_field($_POST['aniweather_plugin_api_key']));
+        update_option('aniweather_plugin_default_location', sanitize_text_field($_POST['aniweather_plugin_default_location']));
+        update_option('aniweather_plugin_temp_unit', sanitize_text_field($_POST['aniweather_plugin_temp_unit']));
+        update_option('aniweather_plugin_show_high_low', isset($_POST['aniweather_plugin_show_high_low']));
+        update_option('aniweather_plugin_show_wind', isset($_POST['aniweather_plugin_show_wind']));
+        update_option('aniweather_plugin_show_description', isset($_POST['aniweather_plugin_show_description']));
+        update_option('aniweather_plugin_gradient_start', sanitize_hex_color(wp_unslash($_POST['aniweather_plugin_gradient_start'])));
+        update_option('aniweather_plugin_gradient_end', sanitize_hex_color(wp_unslash($_POST['aniweather_plugin_gradient_end'])));
         
-        echo '<div class="updated"><p>Settings saved!</p></div>';
-        
+        echo ('<div class="updated"><p>Settings saved!</p></div>');
+          
+        } else {
+            http_response_code(403); 
+            echo "Unauthorized access.";
+            }
+    
 
         
     }
    
-    $api_key = get_option('weather_plugin_api_key');
-    $default_location = get_option('weather_plugin_default_location', 'London,UK');
-    $temp_unit = get_option('weather_plugin_temp_unit', 'F');
-    $show_high_low = get_option('weather_plugin_show_high_low', true);
-    $show_wind = get_option('weather_plugin_show_wind', true);
-    $show_description = get_option('weather_plugin_show_description', true);
-    $gradient_start = get_option('weather_plugin_gradient_start', '#8db3c5');
-    $gradient_end = get_option('weather_plugin_gradient_end', '#0090D2');
+    $api_key = get_option('aniweather_plugin_api_key');
+    $default_location = get_option('aniweather_plugin_default_location', 'London,UK');
+    $temp_unit = get_option('aniweather_plugin_temp_unit', 'F');
+    $show_high_low = get_option('aniweather_plugin_show_high_low', true);
+    $show_wind = get_option('aniweather_plugin_show_wind', true);
+    $show_description = get_option('aniweather_plugin_show_description', true);
+    $gradient_start = get_option('aniweather_plugin_gradient_start', '#8db3c5');
+    $gradient_end = get_option('aniweather_plugin_gradient_end', '#0090D2');
     ?>
     <div class="wrap">
         <h2>Weather Widget Settings</h2>
         <form method="post" action="">
+        <input type="hidden" name="nonce" value="<?php echo $_SESSION['nonce']; ?>">
             <table class="form-table">
                 <tr>
                     <th scope="row">
-                        <label for="weather_plugin_api_key">OpenWeatherMap API Key:</label>
+                        <label for="aniweather_plugin_api_key">OpenWeatherMap API Key:</label>
                     </th>
                     <td>
-                        <input type="text" id="weather_plugin_api_key" name="weather_plugin_api_key" 
-                               value="<?php echo esc_attr($api_key); ?>" class="regular-text">
+                        <input type="text" id="aniweather_plugin_api_key" name="aniweather_plugin_api_key" 
+                               value="<?php echo ($api_key); ?>" class="regular-text">
                         <p class="description">
                             Get your API key from <a href="https://openweathermap.org/api" target="_blank">OpenWeatherMap</a>
                         </p>
@@ -388,20 +409,20 @@ function weather_plugin_settings_page() {
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="weather_plugin_default_location">Default Location:</label>
+                        <label for="aniweather_plugin_default_location">Default Location:</label>
                     </th>
                     <td>
-                        <input type="text" id="weather_plugin_default_location" name="weather_plugin_default_location" 
+                        <input type="text" id="aniweather_plugin_default_location" name="aniweather_plugin_default_location" 
                                value="<?php echo esc_attr($default_location); ?>" class="regular-text">
                         <p class="description">Format: City,Country code (e.g., London,UK)</p>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="weather_plugin_temp_unit">Default Temperature Unit:</label>
+                        <label for="aniweather_plugin_temp_unit">Default Temperature Unit:</label>
                     </th>
                     <td>
-                        <select id="weather_plugin_temp_unit" name="weather_plugin_temp_unit">
+                        <select id="aniweather_plugin_temp_unit" name="aniweather_plugin_temp_unit">
                             <option value="F" <?php selected($temp_unit, 'F'); ?>>Fahrenheit</option>
                             <option value="C" <?php selected($temp_unit, 'C'); ?>>Celsius</option>
                         </select></td>
@@ -410,17 +431,17 @@ function weather_plugin_settings_page() {
                     <th scope="row">Display Options:</th>
                     <td>
                         <label>
-                            <input type="checkbox" name="weather_plugin_show_high_low" 
+                            <input type="checkbox" name="aniweather_plugin_show_high_low" 
                                    <?php checked($show_high_low); ?>>
                             Show High/Low Temperatures
                         </label><br>
                         <label>
-                            <input type="checkbox" name="weather_plugin_show_wind" 
+                            <input type="checkbox" name="aniweather_plugin_show_wind" 
                                    <?php checked($show_wind); ?>>
                             Show Wind Speed
                         </label><br>
                         <label>
-                            <input type="checkbox" name="weather_plugin_show_description" 
+                            <input type="checkbox" name="aniweather_plugin_show_description" 
                                    <?php checked($show_description); ?>>
                             Show Weather Description
                         </label>
@@ -429,13 +450,13 @@ function weather_plugin_settings_page() {
                 <tr>
                     <th scope="row">Widget Colors:</th>
                     <td>
-                        <label for="weather_plugin_gradient_start">Gradient Start Color:</label>
-                        <input type="color" id="weather_plugin_gradient_start" 
-                               name="weather_plugin_gradient_start" 
+                        <label for="aniweather_plugin_gradient_start">Gradient Start Color:</label>
+                        <input type="color" id="aniweather_plugin_gradient_start" 
+                               name="aniweather_plugin_gradient_start" 
                                value="<?php echo esc_attr($gradient_start); ?>"><br><br>
-                        <label for="weather_plugin_gradient_end">Gradient End Color:</label>
-                        <input type="color" id="weather_plugin_gradient_end" 
-                               name="weather_plugin_gradient_end" 
+                        <label for="aniweather_plugin_gradient_end">Gradient End Color:</label>
+                        <input type="color" id="aniweather_plugin_gradient_end" 
+                               name="aniweather_plugin_gradient_end" 
                                value="<?php echo esc_attr($gradient_end); ?>">
                     </td>
                 </tr>
@@ -447,12 +468,12 @@ function weather_plugin_settings_page() {
     <hr>
     <?php
     
-     add_weather_shortcode_docs();  //echo '</div>';
+     generate_aniweather_shortcode_docs();  //echo '</div>';
 }
 
 /* Weather Widget Plugin Styles */
 /* Weather Widget Plugin Styles */
-function weather_plugin_styles() {
+function aniweather_plugin_styles() {
     return "
     .weather-widget {
         color: #fff;
@@ -548,9 +569,9 @@ function weather_plugin_styles() {
 }
 
 // Register the styles
-function register_weather_plugin_styles() {
+function enroll_aniweather_plugin_styles() {
     wp_register_style('weather-plugin-style', false);
     wp_enqueue_style('weather-plugin-style');
-    wp_add_inline_style('weather-plugin-style', weather_plugin_styles());
+    wp_add_inline_style('weather-plugin-style', aniweather_plugin_styles());
 }
-add_action('wp_enqueue_scripts', 'register_weather_plugin_styles');
+add_action('wp_enqueue_scripts', 'enroll_aniweather_plugin_styles');
