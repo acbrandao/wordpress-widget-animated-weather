@@ -1,5 +1,5 @@
-## Animated Weather Plugin
-This is Github source repo for the simple Animated Weather Plugin, this plugin uses https://openweathermap.org/ to fetch weather based on your location and then through settings allows you to customize the display.
+## Animated WordPress Weather Plugin
+This is Github source repo for the simple WordPress Animated Weather Plugin, this plugin uses https://openweathermap.org/ to fetch weather based on your location and then through settings allows you to customize the display.
 ![Weather Widget Shortcode](assets/screenshot-2.jpg)
 
 Visit the Widget page on the blog for more details about the code.. 
