@@ -189,13 +189,13 @@ class Animated_aniweather_Wdiget extends WP_Widget {
             <input type="checkbox" id="<?php echo esc_attr($this->get_field_id('show_wind')); ?>" 
                    name="<?php echo esc_attr($this->get_field_name('show_wind')); ?>" 
                    <?php checked($show_wind); ?>>
-            <label for="<?php echo esc_attr($this->get_field_id('show_wind')); ?>">Show Wind Speed</label>
+            <label for="<?php echo esc_attr($this->get_field_id('show_wind')) ?>">Show Wind Speed</label>
         </p>
         <p>
             <input type="checkbox" id="<?php echo esc_attr($this->get_field_id('show_description')); ?>" 
                    name="<?php echo esc_attr($this->get_field_name('show_description')); ?>" 
                    <?php checked($show_description); ?>>
-            <label for="<?php echo esc_attr($this->get_field_id('show_description'); ?>">Show Weather Description</label>
+            <label for="<?php echo esc_attr($this->get_field_id('show_description')); ?>">Show Weather Description</label>
         </p>
         <?php
     }
