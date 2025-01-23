@@ -343,15 +343,14 @@ echo $aniweather_shortcode_docs;  //Do not escape , all hardcoded html
 // Admin Settings Page
 function aniweather_plugin_settings_page() {
    
-       // Verify the nonce
-       if (!isset($_POST['my_form_nonce']) || !wp_verify_nonce($_POST['my_form_nonce'], 'my_form_action')) {
-        wp_die('Security check failed! Unauthorized access.');
+     // Check if the user has the required permissions
+     if (!current_user_can('manage_options')) {
+        wp_die('Unauthorized access.');
     }
 
-    
     if (isset($_POST['aniweather_plugin_api_key'])) {
 
-       
+        if (wp_verify_nonce($_POST['my_form_nonce'], 'my_form_action')) {
      
        // Process the request 
         update_option('aniweather_plugin_api_key', sanitize_text_field($_POST['aniweather_plugin_api_key']));
@@ -365,16 +364,15 @@ function aniweather_plugin_settings_page() {
         
         echo ('<div class="updated"><p>Settings saved!</p></div>');
 
-          // Regenerate nonce for the next request
-          $_SESSION['nonce'] = bin2hex(random_bytes(32)); 
           
         } else {
+            add_settings_error('aniweather_messages', 'aniweather_message', 'Security check failed!', 'error');
             http_response_code(403); 
             echo "Unauthorized access." ;
             }
-  
-    
-   
+      
+        }
+
     $api_key = get_option('aniweather_plugin_api_key');
     $default_location = get_option('aniweather_plugin_default_location', 'London,UK');
     $temp_unit = get_option('aniweather_plugin_temp_unit', 'F');
