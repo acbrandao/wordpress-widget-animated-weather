@@ -15,13 +15,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-
-// Generate and store a unique nonce if empty
-if (empty($_SESSION['nonce'])) {
-    $_SESSION['nonce'] = bin2hex(random_bytes(32)); 
-    echo "Empty nonce<bR>.\n generating nonce:". $_SESSION['nonce'] ;
-         
-  }
   
 // Widget Class
 class Animated_aniweather_Wdiget extends WP_Widget {
@@ -350,16 +343,16 @@ echo $aniweather_shortcode_docs;  //Do not escape , all hardcoded html
 // Admin Settings Page
 function aniweather_plugin_settings_page() {
    
+       // Verify the nonce
+       if (!isset($_POST['my_form_nonce']) || !wp_verify_nonce($_POST['my_form_nonce'], 'my_form_action')) {
+        wp_die('Security check failed! Unauthorized access.');
+    }
+
     
     if (isset($_POST['aniweather_plugin_api_key'])) {
 
-        $receivedNonce = $_POST['nonce'];
-        $storedNonce = $_SESSION['nonce'];
-      
-        if (hash_equals($receivedNonce, $storedNonce)) {
-         
-      
-    
+       
+     
        // Process the request 
         update_option('aniweather_plugin_api_key', sanitize_text_field($_POST['aniweather_plugin_api_key']));
         update_option('aniweather_plugin_default_location', sanitize_text_field($_POST['aniweather_plugin_default_location']));
@@ -377,7 +370,7 @@ function aniweather_plugin_settings_page() {
           
         } else {
             http_response_code(403); 
-            echo "Unauthorized access.\n nonce:". $receivedNonce."\n stashed:".$storedNonce."\n API:".$_POST['aniweather_plugin_api_key'] ;
+            echo "Unauthorized access." ;
             }
     
 
@@ -396,7 +389,10 @@ function aniweather_plugin_settings_page() {
     <div class="wrap">
         <h2>Weather Widget Settings</h2>
         <form method="post" action="">
-        <input type="hidden" name="nonce" value="<?php echo $_SESSION['nonce']; ?>">
+        <?php
+            // Create and add nonce field
+            wp_nonce_field('my_form_action', 'my_form_nonce');
+            ?>
             <table class="form-table">
                 <tr>
                     <th scope="row">
