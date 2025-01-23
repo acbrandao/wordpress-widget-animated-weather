@@ -99,7 +99,8 @@ class Animated_aniweather_Wdiget extends WP_Widget {
            
             <div class="weather-main">
                 <div class="weather-icon">
-                    <?php echo  esc_html($this->get_aniweather_icon($aniweather_data['weather'][0]['icon']) ); ?>
+                    <?php echo  $this->get_aniweather_icon($aniweather_data['weather'][0]['icon']) ; //do not escape
+                    ?> 
                    
                 </div>
                 <div class="weather-temp">
