@@ -372,10 +372,8 @@ function aniweather_plugin_settings_page() {
             http_response_code(403); 
             echo "Unauthorized access." ;
             }
+  
     
-
-        
-    }
    
     $api_key = get_option('aniweather_plugin_api_key');
     $default_location = get_option('aniweather_plugin_default_location', 'London,UK');
