@@ -57,8 +57,7 @@ You can configure the weather widget settings such as OpenWeathermap API key, de
 ![Weather Widget Settings](assets/screenshot-5.jpg)
 
 #### License and Wordpress.org widget details.
-`
-Contributors: Tony Brandao (abrandao@abrandao.com) wp: abrandaocom
+Contributors: Tony Brandao ( abrandaocom , abrandao@abrandao.com)
 Tags: weather
 Requires at least: 6.0
 Tested up to: 6.7.1
@@ -67,4 +66,3 @@ Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Animated Weather Widget uses openweathermap to show current weather.
-`

@@ -3,7 +3,7 @@
 Plugin Name: Animated Weather Widget
 Description: A simple animated  weather plugin using OpenWeatherMap API (requires API key) and meteocons with shortcode [weather] and settings        
 Version: 1.22
-Author: Tony Brandao (abrandao@abrandao.com)
+Author: Tony Brandao ( abrandaocom , abrandao@abrandao.com)
 Author URI: http://www.abrandao.com
 Plugin URI: https://www.abrandao.com/2025/01/wordpress-animated-weather-widget/
 License:     GPL2
