@@ -2,8 +2,8 @@
 /*
 Plugin Name: Animated Weather Widget
 Description: A simple animated  weather plugin using OpenWeatherMap API (requires API key) and meteocons with shortcode [weather] and settings        
-Version: 1.22
-Author: Tony Brandao ( abrandaocom , abrandao@abrandao.com)
+Version: 1.25
+Author: Tony Brandao ( abrandao@abrandao.com)
 Author URI: http://www.abrandao.com
 Plugin URI: https://www.abrandao.com/2025/01/wordpress-animated-weather-widget/
 License:     GPL2
@@ -17,11 +17,11 @@ if (!defined('ABSPATH')) {
 
   
 // Widget Class
-class Animated_aniweather_Wdiget extends WP_Widget {
+class ANIWEATH_AnimatedWeatherIcons_Widget extends WP_Widget {
     
     public function __construct() {
         parent::__construct(
-            'animated_aniweather_widget',
+            'ANIWEATH_AnimatedWeatherIcons_widget',
             'Animated Weather Widget',
             array('description' => 'Displays weather widget using OpenWeatherMap API with customizable display options')
         );
@@ -245,7 +245,7 @@ class Animated_aniweather_Wdiget extends WP_Widget {
 
 // Register widget
 function enroll_aniweather_widget() {
-    register_widget('Animated_aniweather_Wdiget');
+    register_widget('ANIWEATH_AnimatedWeatherIcons_Widget');
 }
 add_action('widgets_init', 'enroll_aniweather_widget');
 
@@ -272,7 +272,7 @@ function aniweather_widget_shortcode($atts) {
     ob_start();
 
     // Create instance of widget
-    $widget = new Animated_aniweather_Wdiget();
+    $widget = new ANIWEATH_AnimatedWeatherIcons_Widget();
     
     // Call widget() method with proper arguments
     $widget->widget(
@@ -304,7 +304,7 @@ function aniweather_plugin_admin_menu() {
 add_action('admin_menu', 'aniweather_plugin_admin_menu');
 
 // WEather Shortcode documentation / help
-function generate_aniweather_shortcode_docs() {
+function gencreate_aniweather_shortcode_docs() {
 $aniweather_shortcode_docs = '<hr style="margin: 30px 0;">
 <h2>Shortcode Usage</h2>
 <p>You can display the weather widget anywhere in your content using the <code>[weather]</code> shortcode.</p>
@@ -351,19 +351,19 @@ function aniweather_plugin_settings_page() {
 
     if (isset($_POST['aniweather_plugin_api_key'])) {
 
-        if (wp_verify_nonce($_POST['my_form_nonce'], 'my_form_action')) {
+        if (wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['my_form_nonce'], 'my_form_action')) )) {
      
        // Process the request 
         update_option('aniweather_plugin_api_key', sanitize_text_field($_POST['aniweather_plugin_api_key']));
         update_option('aniweather_plugin_default_location', sanitize_text_field($_POST['aniweather_plugin_default_location']));
         update_option('aniweather_plugin_temp_unit', sanitize_text_field($_POST['aniweather_plugin_temp_unit']));
-        update_option('aniweather_plugin_show_high_low', isset($_POST['aniweather_plugin_show_high_low']));
-        update_option('aniweather_plugin_show_wind', isset($_POST['aniweather_plugin_show_wind']));
-        update_option('aniweather_plugin_show_description', isset($_POST['aniweather_plugin_show_description']));
+        update_option('aniweather_plugin_show_high_low', isset( sanitize_text_field($_POST['aniweather_plugin_show_high_low'])));
+        update_option('aniweather_plugin_show_wind', isset( sanitize_text_field($_POST['aniweather_plugin_show_wind'])));
+        update_option('aniweather_plugin_show_description', isset(sanitize_text_field($_POST['aniweather_plugin_show_description'])));
         update_option('aniweather_plugin_gradient_start', sanitize_hex_color(wp_unslash($_POST['aniweather_plugin_gradient_start'])));
         update_option('aniweather_plugin_gradient_end', sanitize_hex_color(wp_unslash($_POST['aniweather_plugin_gradient_end'])));
         
-        echo ('<div class="updated"><p>Settings saved!</p></div>');
+        echo wp_kses_post('<div class="updated"><p>Settings saved!</p></div>');
 
           
         } else {
@@ -397,7 +397,7 @@ function aniweather_plugin_settings_page() {
                     </th>
                     <td>
                         <input type="text" id="aniweather_plugin_api_key" name="aniweather_plugin_api_key" 
-                               value="<?php echo ($api_key); ?>" class="regular-text">
+                               value="<?php echo esc_attr($api_key); ?>" class="regular-text">
                         <p class="description">
                             Get your API key from <a href="https://openweathermap.org/api" target="_blank">OpenWeatherMap</a>
                         </p>
@@ -464,7 +464,7 @@ function aniweather_plugin_settings_page() {
     <hr>
     <?php
     
-     generate_aniweather_shortcode_docs();  //echo '</div>';
+     gencreate_aniweather_shortcode_docs();  //echo '</div>';
 }
 
 /* Weather Widget Plugin Styles */
