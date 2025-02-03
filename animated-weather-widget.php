@@ -99,7 +99,7 @@ class Animated_animwewi_Widget extends WP_Widget {
            
             <div class="weather-main">
                 <div class="weather-icon">
-                    <?php echo  wp_kses_post($this->get_animwewi_icon($animwewi_data['weather'][0]['icon'])) ; 
+                    <?php echo  $this->get_animwewi_icon($animwewi_data['weather'][0]['icon']) ; 
                     ?> 
                    
                 </div>
@@ -338,7 +338,7 @@ $animwewi_shortcode_docs = '<hr style="margin: 30px 0;">
 do_shortcode([weather location="London,UK" temp_unit="C"])</pre>';
 
 
-echo ($animwewi_shortcode_docs);  //
+echo $animwewi_shortcode_docs;  //
 
 // Admin Settings Page
 function animwewi_plugin_settings_page() {
@@ -356,9 +356,9 @@ function animwewi_plugin_settings_page() {
         update_option('animwewi_plugin_api_key', sanitize_text_field($_POST['animwewi_plugin_api_key']));
         update_option('animwewi_plugin_default_location', sanitize_text_field($_POST['animwewi_plugin_default_location']));
         update_option('animwewi_plugin_temp_unit', sanitize_text_field($_POST['animwewi_plugin_temp_unit']));
-        update_option('animwewi_plugin_show_high_low', isset( sanitize_text_field($_POST['animwewi_plugin_show_high_low'])));
-        update_option('animwewi_plugin_show_wind', isset( sanitize_text_field($_POST['animwewi_plugin_show_wind'])));
-        update_option('animwewi_plugin_show_description', isset( sanitize_text_field($_POST['animwewi_plugin_show_description'])));
+        update_option('animwewi_plugin_show_high_low', isset($_POST['animwewi_plugin_show_high_low']));
+        update_option('animwewi_plugin_show_wind', isset($_POST['animwewi_plugin_show_wind']));
+        update_option('animwewi_plugin_show_description', isset($_POST['animwewi_plugin_show_description']));
         update_option('animwewi_plugin_gradient_start', sanitize_hex_color(wp_unslash($_POST['animwewi_plugin_gradient_start'])));
         update_option('animwewi_plugin_gradient_end', sanitize_hex_color(wp_unslash($_POST['animwewi_plugin_gradient_end'])));
         
