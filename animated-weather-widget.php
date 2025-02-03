@@ -64,7 +64,7 @@ class ANIWEATH_AnimatedWeatherIcons_Widget extends WP_Widget {
         
         if (empty($api_key)) {
             echo esc_html('Please configure OpenWeatherMap API key in settings.');
-            echo ($args['after_widget']);  //do not escape
+            echo wp_kses_post($args['after_widget']);  //do not escape
             return;
         }
 
@@ -72,7 +72,7 @@ class ANIWEATH_AnimatedWeatherIcons_Widget extends WP_Widget {
         
         if (is_wp_error($aniweather_data)) {
             echo esc_html($aniweather_data->get_error_message() );
-            echo ($args['after_widget']);  //do not escape
+            echo  wp_kses_post($args['after_widget']);  //do not escape
             return;
         }
 
@@ -99,7 +99,7 @@ class ANIWEATH_AnimatedWeatherIcons_Widget extends WP_Widget {
            
             <div class="weather-main">
                 <div class="weather-icon">
-                    <?php echo  $this->get_aniweather_icon($aniweather_data['weather'][0]['icon']) ; //do not escape
+                    <?php echo  wp_kses_post( $this->get_aniweather_icon($aniweather_data['weather'][0]['icon']) ) ; //do not escape
                     ?> 
                    
                 </div>
@@ -123,18 +123,12 @@ class ANIWEATH_AnimatedWeatherIcons_Widget extends WP_Widget {
                 <?php if($show_high_low): ?>
                     <div class="weather-item">
                         <i class="fas fa-temperature-high"></i>
-                        High: <?php 
-                        echo  esc_html($temp_unit) == 'F'
-                            ? round($aniweather_data['main']['temp_max'] * 9/5 + 32) . '°F'
-                            : round($aniweather_data['main']['temp_max']) . '°C';
+                        High: <?php  echo  esc_html($temp_unit) == 'F' ? round($aniweather_data['main']['temp_max'] * 9/5 + 32) . '°F' : round($aniweather_data['main']['temp_max']) . '°C';
                         ?>
                     </div>
                     <div class="weather-item">
                         <i class="fas fa-temperature-low"></i>
-                        Low: <?php 
-                        echo  esc_html($temp_unit) == 'F'
-                            ? round($aniweather_data['main']['temp_min'] * 9/5 + 32) . '°F'
-                            : round($aniweather_data['main']['temp_min']) . '°C';
+                        Low: <?php   echo  esc_html($temp_unit) == 'F'? round($aniweather_data['main']['temp_min'] * 9/5 + 32) . '°F' : round($aniweather_data['main']['temp_min']) . '°C';
                         ?>
                     </div>
                 <?php endif; ?>
