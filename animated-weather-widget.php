@@ -272,7 +272,7 @@ function animwewi_widget_shortcode($atts) {
     ob_start();
 
     // Create instance of widget
-    $widget = new Animated_animwewi_Wdiget();
+    $widget = new Animated_animwewi_Widget();
     
     // Call widget() method with proper arguments
     $widget->widget(
