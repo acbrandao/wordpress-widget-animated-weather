@@ -348,6 +348,7 @@ function aniweather_plugin_settings_page() {
         if (wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['my_form_nonce'], 'my_form_action')) )) {
      
        // Process the request 
+       
         update_option('aniweather_plugin_api_key', sanitize_text_field($_POST['aniweather_plugin_api_key']));
         update_option('aniweather_plugin_default_location', sanitize_text_field($_POST['aniweather_plugin_default_location']));
         update_option('aniweather_plugin_temp_unit', sanitize_text_field($_POST['aniweather_plugin_temp_unit']));
