@@ -123,12 +123,12 @@ class ANIWEATH_AnimatedWeatherIcons_Widget extends WP_Widget {
                 <?php if($show_high_low): ?>
                     <div class="weather-item">
                         <i class="fas fa-temperature-high"></i>
-                        High: <?php  echo  esc_html($temp_unit) == 'F' ? round( esc_attr($aniweather_data['main']['temp_max']) * 9/5 + 32) . '°F' : round(esc_attr($aniweather_data['main']['temp_max'])) . '°C';
+                        High: <?php  echo  esc_html($temp_unit) == 'F' ? esc_attr(round($aniweather_data['main']['temp_max'] * 9/5 + 32) . '°F'):esc_attr( round($aniweather_data['main']['temp_max']) . '°C');
                         ?>
                     </div>
                     <div class="weather-item">
                         <i class="fas fa-temperature-low"></i>
-                        Low: <?php   echo  esc_html($temp_unit) == 'F'? round(esc_attr($aniweather_data['main']['temp_min']) * 9/5 + 32) . '°F' : round(esc_attr($aniweather_data['main']['temp_min'])) . '°C';
+                        Low: <?php   echo  esc_html($temp_unit) == 'F'? esc_attr(round($aniweather_data['main']['temp_min'] * 9/5 + 32) . '°F'):esc_attr( round($aniweather_data['main']['temp_min']) . '°C');
                         ?>
                     </div>
                 <?php endif; ?>
