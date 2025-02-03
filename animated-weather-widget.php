@@ -338,7 +338,7 @@ $animwewi_shortcode_docs = '<hr style="margin: 30px 0;">
 do_shortcode([weather location="London,UK" temp_unit="C"])</pre>';
 
 
-echo wp_kses_post($animwewi_shortcode_docs);  //
+echo ($animwewi_shortcode_docs);  //
 
 // Admin Settings Page
 function animwewi_plugin_settings_page() {
