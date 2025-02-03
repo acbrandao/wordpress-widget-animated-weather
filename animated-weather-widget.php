@@ -245,7 +245,7 @@ class Animated_animwewi_Widget extends WP_Widget {
 
 // Register widget
 function enroll_animwewi_widget() {
-    register_widget('Animated_animwewi_Wdiget');
+    register_widget('Animated_animwewi_Widget');
 }
 add_action('widgets_init', 'enroll_animwewi_widget');
 
