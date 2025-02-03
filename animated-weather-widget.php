@@ -143,7 +143,7 @@ class ANIWEATH_AnimatedWeatherIcons_Widget extends WP_Widget {
         </div>
         <?php
         
-        echo ($args['after_widget']);  //do not escape
+        echo  wp_kses_post($args['after_widget']);  //do not escape
     }
 
     // Widget Backend Form
@@ -332,7 +332,7 @@ $aniweather_shortcode_docs = '<hr style="margin: 30px 0;">
 do_shortcode([weather location="London,UK" temp_unit="C"])</pre>';
 
 
-echo $aniweather_shortcode_docs;  //Do not escape , all hardcoded html
+echo  wp_kses_post($aniweather_shortcode_docs);  //Do not escape , all hardcoded html
 }
 
 // Admin Settings Page
