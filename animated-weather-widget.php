@@ -349,12 +349,12 @@ function aniweather_plugin_settings_page() {
      
        // Process the request 
        
-        update_option('aniweather_plugin_api_key', sanitize_text_field($_POST['aniweather_plugin_api_key']));
-        update_option('aniweather_plugin_default_location', sanitize_text_field($_POST['aniweather_plugin_default_location']));
-        update_option('aniweather_plugin_temp_unit', sanitize_text_field($_POST['aniweather_plugin_temp_unit']));
-        update_option('aniweather_plugin_show_high_low',  sanitize_text_field($_POST['aniweather_plugin_show_high_low']));
-        update_option('aniweather_plugin_show_wind', sanitize_text_field($_POST['aniweather_plugin_show_wind']));
-        update_option('aniweather_plugin_show_description', sanitize_text_field($_POST['aniweather_plugin_show_description']));
+        update_option('aniweather_plugin_api_key', sanitize_text_field(wp_unslash( $_POST['aniweather_plugin_api_key'])));
+        update_option('aniweather_plugin_default_location', sanitize_text_field(wp_unslash( $_POST['aniweather_plugin_default_location'])));
+        update_option('aniweather_plugin_temp_unit', sanitize_text_field(wp_unslash( $_POST['aniweather_plugin_temp_unit'])));
+        update_option('aniweather_plugin_show_high_low',  sanitize_text_field(wp_unslash( $_POST['aniweather_plugin_show_high_low'])));
+        update_option('aniweather_plugin_show_wind', sanitize_text_field(wp_unslash( $_POST['aniweather_plugin_show_wind'])));
+        update_option('aniweather_plugin_show_description', sanitize_text_field(wp_unslash( $_POST['aniweather_plugin_show_description'])));
         update_option('aniweather_plugin_gradient_start', sanitize_hex_color(wp_unslash($_POST['aniweather_plugin_gradient_start'])));
         update_option('aniweather_plugin_gradient_end', sanitize_hex_color(wp_unslash($_POST['aniweather_plugin_gradient_end'])));
         
