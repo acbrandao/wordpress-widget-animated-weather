@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Animated Weather Widget
-Description: A simple animated  weather plugin using OpenWeatherMap API (requires API key) and meteocons with shortcode [weather] and settings        
+Description: Simple aimated weather plugin using OpenWeatherMap API (requires API key) and meteocons with shortcode [weather] and settings        
 Version: 1.25
 Author: Tony Brandao (abrandao@abrandao.com)
 Author URI: http://www.abrandao.com/author
