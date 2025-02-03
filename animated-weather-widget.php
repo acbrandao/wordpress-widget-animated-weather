@@ -99,7 +99,21 @@ class ANIWEATH_AnimatedWeatherIcons_Widget extends WP_Widget {
            
             <div class="weather-main">
                 <div class="weather-icon">
-                    <?php echo  wp_kses_post( $this->get_aniweather_icon($aniweather_data['weather'][0]['icon']) ) ; //do not escape
+                    <?php
+                    
+                    echo wp_kses(
+                        $this->get_aniweather_icon($aniweather_data['weather'][0]['icon']),
+                        array(
+                            'embed' => array(
+                                'src'    => array(),
+                                'type'   => array(),
+                                'width'  => array(),
+                                'height' => array(),
+                                'alt'    => array(),
+                            ),
+                        )
+                    );
+                    
                     ?> 
                    
                 </div>
